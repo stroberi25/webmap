@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Pendidikan SIG - Geomatika UPN</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Leaflet Routing Machine CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+
+  <style>
+    #map {
+      height: 500px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">SIG Geomatika UPN</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="#beranda">Beranda</a></li>
+        <li class="nav-item"><a class="nav-link" href="#jenis-peta">Jenis-jenis Peta</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contoh-peta">Contoh Peta</a></li>
+        <li class="nav-item"><a class="nav-link" href="#peta-interaktif">Peta Interaktif</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Beranda -->
+<section id="beranda" class="p-5 bg-light">
+  <div class="container">
+    <h1 class="text-center">Selamat Datang di Website SIG</h1>
+    <p class="text-center">Website ini dibuat untuk pembelajaran Sistem Informasi Geografis pada Program Studi Teknik Geomatika UPN "Veteran" Yogyakarta.</p>
+  </div>
+</section>
+
+<!-- Jenis-jenis Peta -->
+<section id="jenis-peta" class="p-5">
+  <div class="container">
+    <h2>Jenis-jenis Peta</h2>
+    <ul>
+      <li><strong>Peta Statis:</strong> Peta dalam bentuk cetak atau gambar digital yang tidak bisa diinteraksikan.</li>
+      <li><strong>Peta Dinamis:</strong> Peta berbasis digital yang dapat di-*zoom* atau digeser, namun tidak interaktif secara penuh.</li>
+      <li><strong>Peta Interaktif:</strong> Peta yang memungkinkan interaksi pengguna seperti klik objek, filter data, dan perhitungan rute.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Contoh Peta -->
+<section id="contoh-peta" class="p-5 bg-light">
+  <div class="container">
+    <h2>Contoh Peta</h2>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/World_map_blank_without_borders.svg" class="img-fluid" alt="Contoh Peta Statis">
+    <p class="mt-2">Contoh peta dunia statis dalam format gambar SVG.</p>
+  </div>
+</section>
+
+<!-- Peta Interaktif -->
+<section id="peta-interaktif" class="p-5">
+  <div class="container">
+    <h2>Peta Interaktif</h2>
+    <div id="map"></div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-primary text-white text-center py-3">
+  <p>&copy; 2025 SIG Geomatika UPN "Veteran" Yogyakarta</p>
+</footer>
+
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+
+<script>
+  // Inisialisasi peta
+  const map = L.map('map').setView([-7.7697, 110.3884], 16); // Koordinat UPN
+
+  // Basemap
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // GeoJSON (Contoh Bangunan di Kampus)
+  const geojsonData = {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": { "nama": "Asrama Putra" },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [110.3878, -7.7693]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": { "nama": "Asrama Putri" },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [110.389, -7.7695]
+        }
+      }
+    ]
+  };
+
+  // Tampilkan GeoJSON ke peta
+  L.geoJSON(geojsonData, {
+    onEachFeature: function (feature, layer) {
+      layer.bindPopup(feature.properties.nama);
+    }
+  }).addTo(map);
+
+  // Routing
+  L.Routing.control({
+    waypoints: [
+      L.latLng(-7.7693, 110.3878),
+      L.latLng(-7.7695, 110.389)
+    ],
+    routeWhileDragging: true
+  }).addTo(map);
+</script>
+
+</body>
+</html>

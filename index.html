@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teknik Geomatika UPN "Veteran" Yogyakarta</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #28a745;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 24px;
+            border-bottom: 5px solid #1e7e34;
+        }
+        .navigation {
+            background-color: #343a40;
+            padding: 10px;
+        }
+        .navigation a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .hero-section {
+            background: url('https://via.placeholder.com/1200x400') no-repeat center center;
+            background-size: cover;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(16, 171, 44);
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .content-section {
+            padding: 40px;
+        }
+        #map {
+            height: 500px;
+        }
+        .footer {
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            margin-top: 20px;
+            border-top: 5px solid #1e7e34;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">Teknik Geomatika UPN "Veteran" Yogyakarta</div>
+
+    <div class="navigation text-center">
+        <a href="#">Home</a>
+        <a href="#">Profil</a>
+        <a href="#">Program Studi</a>
+        <a href="#peta">Jenis & Contoh Peta</a>
+        <a href="#">Kontak</a>
+    </div>
+
+    <div class="hero-section">
+        Sistem Informasi Geografis Berbasis Internet
+    </div>
+
+    <div class="container content-section">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>Tentang Mata Kuliah</h2>
+                <p>Salah satu mata kuliah yang termasuk dalam KBK Sistem Informasi Geografis (SIG) adalah SIG Berbasis Internet. Mata kuliah ini membahas cara menampilkan dan mengelola data spasial secara online.</p>
+            </div>
+            <div class="col-md-4">
+                <h2>KBK Program</h2>
+                <ul class="list-group">
+                    <li class="list-group-item">KBK Terestris</li>
+                    <li class="list-group-item">KBK Sistem Informasi Geografis</li>
+                    <li class="list-group-item">KBK Fotogrametri</li>
+                    <li class="list-group-item">KBK Penginderaan Jauh</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- PETA STATIS & DINAMIS -->
+    <div id="peta" class="container content-section">
+        <h2>Jenis & Contoh Peta</h2>
+        <p>Peta adalah representasi visual dari suatu area. Berikut adalah contoh peta statis dan dinamis.</p>
+        <p id="mapDescription">Pilih salah satu jenis peta untuk melihatnya.</p>
+        <img id="mapImage" src="" class="img-fluid border">
+        <button class="btn btn-primary" onclick="showMap('statis')">Tampilkan Peta Statis</button>
+        <button class="btn btn-success" onclick="showMap('dinamis')">Tampilkan Peta Dinamis</button>
+        <br><br>
+    </div>
+
+    <!-- PETA INTERAKTIF -->
+    <div id="peta-interaktif" class="container content-section">
+        <h2>Peta Interaktif - Lokasi Pondok Pesantren</h2>
+        <p> Peta interaktif adalah jenis peta digital yang memungkinkan pengguna berinteraksi.</p>
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Panduan Interaksi</h5>
+                <ul>
+                    <li>Klik tombol "Lokasi Pesantren" untuk memusatkan peta</li>
+                    <li>Klik pada area untuk melihat informasi bangunan</li>
+                    <li>Gunakan zoom untuk memperbesar/perkecil</li>
+                </ul>
+                <button class="btn btn-primary" onclick="goToPesantren()">Lokasi Pesantren</button>
+                <div class="mt-3">
+                    <strong>Legenda:</strong>
+                    <ul>
+                        <li style="color:blue;">Bangunan Umum</li>
+                        <li style="color:green;">Asrama Putri</li>
+                        <li style="color:red;">Asrama Putra</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Copyright ©Indy Alin Nabila_117220003
+    </div>
+
+    <!-- SCRIPT JS -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+        function showMap(type) {
+            const image = document.getElementById('mapImage');
+            const desc = document.getElementById('mapDescription');
+            if (type === 'statis') {
+                image.src = 'https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,q_auto:best,w_640/v1634025439/01gxn5r44aswvytzyh69efme8m.jpg';
+                desc.innerHTML = "<strong>Peta Statis:</strong> Peta statis adalah peta yang bentuknya tetap dan tidak dapat diubah atau dimanipulasi oleh pengguna secara langsung. Biasanya, ditampilkan dalam bentuk gambar cetak atau digital yang sudah dirancang dan dipublikasikan sebelumnya. Peta statis tidak memiliki fitur interaktif seperti zoom, klik informasi, atau navigasi.";
+            } else {
+                image.src = 'https://th.bing.com/th/id/R.948cc48913185a900ad38671268a78ce?rik=thOZHVS7LjusPw&riu=http%3a%2f%2fandimanwno.files.wordpress.com%2f2010%2f06%2fpeta-penggunaan-lahan.gif&ehk=vLL3%2bfybXGWl6S3cgMsT7MdWgQ7Soh%2f3DzAR7KEEf6U%3d&risl=&pid=ImgRaw&r=0.jpg';
+                desc.innerHTML = "<strong>Peta Dinamis:</strong> Peta dinamis adalah peta digital yang dapat berubah atau diperbarui secara otomatis sesuai dengan data yang terkini. Peta ini masih terbatas dalam interaksi pengguna, tetapi sudah memungkinkan perubahan isi peta secara berkala leh sistem maupun oleh pengguna dengan pengaturan tertentu..";
+            }
+        }
+
+        const map = L.map('map').setView([-7.8264, 110.3614], 16);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const asramaPutra = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "properties": { "nama": "Asrama Putra" },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [[[110.3608, -7.8260], [110.3610, -7.8260], [110.3610, -7.8262], [110.3608, -7.8262], [110.3608, -7.8260]]]
+                }
+            }]
+        };
+
+        const asramaPutri = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "properties": { "nama": "Asrama Putri" },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [[[110.3612, -7.8263], [110.3614, -7.8263], [110.3614, -7.8265], [110.3612, -7.8265], [110.3612, -7.8263]]]
+                }
+            }]
+        };
+
+        const bangunanUmum = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "properties": { "nama": "Masjid Utama" },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [[[110.3605, -7.8266], [110.3607, -7.8266], [110.3607, -7.8268], [110.3605, -7.8268], [110.3605, -7.8266]]]
+                }
+            }]
+        };
+
+        L.geoJSON(bangunanUmum, {
+            style: { color: 'blue' },
+            onEachFeature: (feature, layer) => layer.bindPopup(feature.properties.nama)
+        }).addTo(map);
+
+        L.geoJSON(asramaPutra, {
+            style: { color: 'red' },
+            onEachFeature: (feature, layer) => layer.bindPopup(feature.properties.nama)
+        }).addTo(map);
+
+        L.geoJSON(asramaPutri, {
+            style: { color: 'green' },
+            onEachFeature: (feature, layer) => layer.bindPopup(feature.properties.nama)
+        }).addTo(map);
+
+        function goToPesantren() {
+            map.setView([-7.8264, 110.3614], 18);
+        }
+    </script>
+</body>
+</html>
